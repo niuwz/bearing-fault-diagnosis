@@ -8,7 +8,8 @@ from torch.utils.data import DataLoader, dataset, random_split
 from matplotlib import pyplot as plt
 import seaborn as sns
 from fault_diag_utils import *
-from cnn_model import CNN as modle
+# from cnn_model import CNN as modle
+from cnn_model import LSTM_CNN as modle
 sns.set()
 
 
@@ -70,10 +71,10 @@ if __name__ == "__main__":
     # 批尺寸
     BATCH_SIZE = 64
     # 训练迭代次数
-    EPOCHS = 50
+    EPOCHS = 80
     # 重叠采样的偏移量
     STRIDE = 128
-    PATH = "轴承故障诊断/data"
+    PATH = "data"
     # 定义训练设备这里使用GPU进行加速
     DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     # 保存损失以及准确率信息
@@ -104,7 +105,7 @@ if __name__ == "__main__":
     train_loader = DataLoader(train_loader, BATCH_SIZE, shuffle=True)
     test_loader = DataLoader(test_loader, BATCH_SIZE, shuffle=True)
     '''定义网络模型、优化器和损失函数'''
-    net = modle(3, 9).to(DEVICE)
+    net = modle(DEVICE).to(DEVICE)
     optimizer = optim.Adam(net.parameters())
     # 损失函数使用交叉熵函数
     loss_func = nn.CrossEntropyLoss()
@@ -117,7 +118,7 @@ if __name__ == "__main__":
             test(net, test_loader, loss_func, "验证")
             print()
     # 保存模型
-    torch.save(net, "轴承故障诊断/cnn_net.pth")
+    torch.save(net, "./cnn_lstm_net.pth")
     '''绘图部分'''
     # plt.plot(LOSSES)
     # plt.xlabel("Epochs")

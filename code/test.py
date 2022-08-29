@@ -6,13 +6,14 @@ from fault_diag_utils import *
 
 if __name__ == "__main__":
     # 读取测试数据
-    data = io.loadmat("轴承故障诊断/data/Fault_Diag_Data_for_student.mat")
+    data = io.loadmat("data/Fault_Diag_Data.mat")
     test_data = torch.tensor(
         data["TestDataArray"], dtype=torch.float32).permute(2, 1, 0)
     # 获取训练设备
     DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     # 加载已训练好的模型
-    net = torch.load("轴承故障诊断/cnn_net.pth").to(DEVICE)
+    net = torch.load("cnn_net.pth").to(DEVICE)
+    # net = torch.load("cnn_lstm_net.pth").to(DEVICE)
     print(f"DEVICE:{DEVICE}")
     net.eval()
     predict = []
@@ -30,4 +31,4 @@ if __name__ == "__main__":
     }
     df = pd.DataFrame(df)
     # 保存测试集标签
-    df.to_excel("轴承故障诊断/results.xlsx", index=False)
+    df.to_excel("results.xlsx", index=False)
